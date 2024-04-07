@@ -43,3 +43,9 @@ hr {
     border-radius: 5px;
     border: 1px solid #ccc;
 }
+
+.col-sm {
+    margin: 10px 0;
+    text-align: center;
+
+}

@@ -79,7 +79,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             <p class="frase"> <a class="link" href="login.php"> Riprova </a> </p>
             </div>';
     }
-
 }
 
 ?>
