@@ -70,9 +70,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     if(mysqli_num_rows($result) == 1){
         $row = mysqli_fetch_assoc($result);
-
-
-
         $_SESSION['id'] = $row['UserID'];
         header('Location: index.php');
     } else {
