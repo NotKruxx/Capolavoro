@@ -78,7 +78,7 @@ $row = mysqli_fetch_array($result);
       </div>
       <div class="mb-3">
         <label for="newAmount" class="form-label">Importo</label>
-        <input type="number" class="form-control" id="newAmount" name="newAmount" value="<?php echo $row['Amount']; ?>" step="0.01">
+        <input type="number" class="form-control" id="newAmount" name="newAmount" value="<?php echo $row['Amount']; ?>" step="0.01" min="0">
       </div>
       <div class="mb-3">
         <label for="newDate" class="form-label">Data</label>

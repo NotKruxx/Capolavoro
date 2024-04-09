@@ -41,6 +41,53 @@ if (isset($_POST['logout'])) {
   <link rel="stylesheet" href="style.css">
   <title>Homepage</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  
+  <script>
+    document.getElementById('Importo').onchange = function () {
+        if (this.value < 0) {
+            alert('Devi inserire un importo maggiore o uguale a 0!');
+            this.value = 0;
+        }
+    };
+</script>
+  
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      <?php
+
+      $id = $_SESSION['id'];
+      $query = "SELECT YEAR(Date) AS Anno, ";
+      $query .= "SUM(CASE WHEN Tipo = 'Entrata' THEN Amount ELSE -Amount END) AS Totale ";
+      $query .= "FROM Transactions WHERE UserID = $id GROUP BY YEAR(Date)";
+      $result = mysqli_query($db, $query);
+
+      ?>
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Anno', 'Totale'],
+          <?php
+          while ($row = mysqli_fetch_array($result)) {
+            echo "['" . $row['Anno'] . "', " . $row['Totale'] . "],";
+          }
+          ?>
+
+        ]);
+
+        var options = {
+          title: 'Andamento delle transazioni nel tempo',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -137,11 +184,11 @@ if (isset($_POST['logout'])) {
                       <option value="Entrata">Entrata</option>
                       <option value="Uscita">Uscita</option>
                     </select>
-                  </div>
-                  <div class="mb-3">
+                    </div>
+                    <div class="mb-3">
                     <label for="Importo" class="form-label">Importo</label>
-                    <input type="number" class="form-control" id="Importo" value="Amount" name="Amount" step="0.01">
-                  </div>
+                    <input type="number" class="form-control" id="Importo" value="Amount" name="Amount" step="0.01" min="0" required>
+                    </div>
                   <div class="mb-3">
                     <label for="Data" class="form-label">Data</label>
                     <input type="date" class="form-control" id="Data" value="Date" name="Date">
@@ -150,14 +197,20 @@ if (isset($_POST['logout'])) {
                 </form>
               </div>
             </div>
-            <div class="col-sm">
-              <div class= "container">
-                Modifica o elimina una transazione                  
-              </div>
-            </div>
           </div>
+        </div>
         </div>';
+
+      echo ' <div class="container">
+              <h1 class="titolo">Grafico delle transazioni <hr> </h1>
+              <center>
+      <div id="curve_chart" style="width: 900px; height: 500px"></div>
+      </center>
+      </div>';
   }
+
+
+
   ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
