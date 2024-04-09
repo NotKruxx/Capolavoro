@@ -11,9 +11,6 @@ hr {
 .container {
     margin: 0 auto;
     width: 80%;
-    border-color: black;
-    border-width: 1px;
-    border-style: solid;
     padding: 10px;
     border-radius: 10px;
     margin: 5%;
