@@ -165,7 +165,7 @@ if (isset($_POST['logout'])) {
                   <a href='modifica.php?id=" . $row['TransactionID'] . "' class='btn btn-primary btn-sm'>Modifica</a> <!-- Bottone per la modifica -->
                   <form method='post'>
                     <input type='hidden' name='transactionID' value='" . $row['TransactionID'] . "'>
-                    <button type='submit' name='elimina' class='btn btn-danger btn-sm'>Elimina</button> <!-- Bottone per l'eliminazione -->
+                    <button type='submit' name='elimina' class='btn btn-danger btn-sm'>Elimina</button>
                   </form>
                 </td>
               </tr>";
@@ -178,7 +178,8 @@ if (isset($_POST['logout'])) {
       <div class="row">
         <div class="col-sm">
           <div class= "container">
-        Aggiungi una transazione
+            <h1 class="titolo">Aggiungi una transazione <hr> </h1>
+            <div class="container">
         <form action="aggiungi.php" method="post">
           <div class="mb-3">
             <label for="Tipo" class="form-label">Tipo</label>
