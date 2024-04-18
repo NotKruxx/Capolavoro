@@ -12,29 +12,33 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: index.php");
     exit();
 }
 
-$transactionID = $_GET['id'];
+$transactionID = mysqli_real_escape_string($db, $_GET['id']);
 
 if (isset($_POST['modifica'])) {
-    $newTipo = $_POST['newTipo'];
-    $newAmount = $_POST['newAmount'];
-    $newDate = $_POST['newDate'];
+    $newTipo = mysqli_real_escape_string($db, $_POST['newTipo']);
+    $newAmount = mysqli_real_escape_string($db, $_POST['newAmount']);
+    $newDate = mysqli_real_escape_string($db, $_POST['newDate']);
 
-    $query = "UPDATE Transactions SET Tipo='$newTipo', Amount='$newAmount', Date='$newDate' WHERE TransactionID=$transactionID";
-    mysqli_query($db, $query);
+    $query = "UPDATE Transactions SET Tipo=?, Amount=?, Date=? WHERE TransactionID=?";
+    $stmt = mysqli_prepare($db, $query);
+    mysqli_stmt_bind_param($stmt, "sssi", $newTipo, $newAmount, $newDate, $transactionID);
+    mysqli_stmt_execute($stmt);
 
     header("Location: index.php");
     exit();
 }
 
-$query = "SELECT * FROM Transactions WHERE TransactionID = $transactionID";
-$result = mysqli_query($db, $query);
+$query = "SELECT * FROM Transactions WHERE TransactionID = ?";
+$stmt = mysqli_prepare($db, $query);
+mysqli_stmt_bind_param($stmt, "i", $transactionID);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 $row = mysqli_fetch_array($result);
-
 ?>
 
 <!doctype html>
@@ -78,11 +82,11 @@ $row = mysqli_fetch_array($result);
       </div>
       <div class="mb-3">
         <label for="newAmount" class="form-label">Importo</label>
-        <input type="number" class="form-control" id="newAmount" name="newAmount" value="<?php echo $row['Amount']; ?>" step="0.01" min="0">
+        <input type="number" class="form-control" id="newAmount" name="newAmount" value="<?php echo htmlspecialchars($row['Amount']); ?>" step="0.01" min="0">
       </div>
       <div class="mb-3">
         <label for="newDate" class="form-label">Data</label>
-        <input type="date" class="form-control" id="newDate" name="newDate" value="<?php echo $row['Date']; ?>">
+        <input type="date" class="form-control" id="newDate" name="newDate" value="<?php echo htmlspecialchars($row['Date']); ?>">
       </div>
       <button type="submit" class="btn btn-primary" name="modifica">Salva Modifiche</button>
     </form>
